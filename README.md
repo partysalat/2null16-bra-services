@@ -51,6 +51,7 @@ and (pi)
 sudo chmod +x ~/2null16-bra-services.git/hooks/post-receive
 ```
 
+
 On local machine:
 ```
 git remote add pi pi@raspberrypi:2null16-bra.git
