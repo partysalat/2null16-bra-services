@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DEPLOYDIR=~/2null16-bra
+
+GIT_WORK_TREE="$DEPLOYDIR" git checkout -f
+
+cd "$DEPLOYDIR"
+
+npm run stop
+npm prune
+npm install
+
+npm run build
+
+npm start
+
+echo "All done ;)"

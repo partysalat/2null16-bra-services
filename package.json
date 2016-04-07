@@ -1,0 +1,56 @@
+{
+  "name": "2null16-bra",
+  "version": "0.1.0",
+  "description": "2null16-bra written in node.js",
+  "scripts": {
+    "test": "./node_modules/jasmine-node/bin/jasmine-node --color --test-dir test",
+    "start": "pm2 start 2null16-bra-services.js",
+    "build": "gulp build",
+    "stop": "pm2 stop 2null16-bra-services"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:partysalat/2null16-bra.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "lenser.ben@gmail.com",
+  "dependencies": {
+    "bluebird": "^3.3.4",
+    "hapi": "^13.2.2",
+    "hapi-auto-routes": "^1.0.3",
+    "hapi-swagger": "^4.3.1",
+    "hoek": "^3.0.4",
+    "inert": "^3.2.0",
+    "joi": "^8.0.5",
+    "lodash": "^4.6.1",
+    "pkginfo": "^0.4.0",
+    "request-promise": "^2.0.1",
+    "sprintf-js": "^1.0.3",
+    "vision": "^4.0.1"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-develop-server": "^0.5.1",
+    "gulp-if": "^2.0.0",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-jasmine": "^2.3.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "istanbul": "^0.4.2",
+    "jasmine-core": "^2.4.1",
+    "jasmine-node": "^2.0.0",
+    "jasmine-reporters": "^2.1.1",
+    "jasmine-spec-reporter": "^2.4.0",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "^2.1.0",
+    "mkdirp": "*",
+    "require-dir": "^0.3.0",
+    "rewire": "^2.5.1",
+    "run-sequence": "^1.1.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+   }
+}
