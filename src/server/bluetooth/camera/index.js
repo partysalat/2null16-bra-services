@@ -30,6 +30,7 @@ function onConnect(peripheral) {
 }
 
 function onDisconnect(macAddress) {
+  console.log("DISCONNECTED",macAddress);
   delete connected[macAddress];
 }
 
