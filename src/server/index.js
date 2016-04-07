@@ -29,8 +29,9 @@ function create(connectionSettings, callback) {
     routes.bind(server).register({
       pattern: __dirname + '/routes/*.js'
     });
-    
-    
+
+    require("./bluetooth");
+
     callback(null, server);
   });
 

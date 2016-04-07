@@ -22,6 +22,20 @@ var routes = [{
     config: {
       handler: require('../handlers/versionHandler.js')
     }
+  },
+  {
+    method: 'GET',
+    path: '/internal/version/start',
+    config: {
+      handler: require('../handlers/versionHandler.js').start
+    }
+  },
+  {
+    method: 'GET',
+    path: '/internal/version/stop',
+    config: {
+      handler: require('../handlers/versionHandler.js').stop
+    }
   }
 ];
 
