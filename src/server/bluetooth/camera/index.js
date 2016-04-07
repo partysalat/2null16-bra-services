@@ -2,7 +2,8 @@
 var _ = require("lodash"),
   noble = require("noble");
 var MAC_ADDRESSES = [
-  "ffff00008185"
+  "ffff00008185",
+  "2255db705ff8429881f79ac519d36ffd"
 ];
 var connected = {};
 
