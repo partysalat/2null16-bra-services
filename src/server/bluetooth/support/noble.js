@@ -1,3 +1,4 @@
+'use strict';
 var noble = require("noble");
 function init() {
   noble.on('stateChange', function (state) {

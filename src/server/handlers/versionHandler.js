@@ -8,7 +8,7 @@ module.exports = function version(request, reply) {
 
 module.exports.start = function (request, reply) {
   noble.start();
-  reply("ok")
+  reply("ok");
 };
 module.exports.stop = function (request, reply) {
   noble.stop();
