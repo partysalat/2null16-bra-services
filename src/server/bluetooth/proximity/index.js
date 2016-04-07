@@ -15,7 +15,7 @@ function onDiscover(peripheral) {
   var rssi = peripheral.rssi;
   if (_.includes(MAC_ADDRESSES, macAddress)) {
     var distance = proximityService.calcDistance(macAddress,rssi);
-    console.debug(macAddress,distance);
+    console.log(macAddress,distance);
 
   }
 }
