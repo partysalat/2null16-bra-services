@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEPLOYDIR=~/2null16-bra
+DEPLOYDIR=~/2null16-bra-services
 
 GIT_WORK_TREE="$DEPLOYDIR" git checkout -f
 
