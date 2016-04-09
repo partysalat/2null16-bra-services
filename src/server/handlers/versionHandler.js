@@ -15,3 +15,14 @@ module.exports.stop = function (request, reply) {
   reply("ok");
 };
 
+
+var GPhoto = require("./../bluetooth/camera/gphoto");
+module.exports.captureImage = function(request,reply){
+  new GPhoto().captureImageAndDownload({
+    //filename:Date.now()+".jpg"
+    folder:__dirname + "/target"
+  }).then(reply).catch(function(err){
+    console.log(err);
+    reply(err);
+  });
+};
