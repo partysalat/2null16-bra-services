@@ -20,9 +20,27 @@ var GPhoto = require("./../bluetooth/camera/gphoto");
 module.exports.captureImage = function(request,reply){
   new GPhoto().captureImageAndDownload({
     //filename:Date.now()+".jpg"
-    folder:__dirname + "/target"
   }).then(reply).catch(function(err){
     console.log(err);
     reply(err);
   });
+};
+
+
+
+
+
+var stream;
+
+module.exports.preview = function(request,reply){
+  if(!stream){
+    stream = new GPhoto().asStream().capturePreview();
+  }
+  //reply(new GPhoto().asStream().capturePreview()).header("content-type","application/octet-stream");
+  reply(stream).header("content-type","application/octet-stream");
+};
+module.exports.stopPreview = function(request,reply){
+  //reply(new GPhoto().asStream().capturePreview()).header("content-type","application/octet-stream");
+
+  reply().header("content-type","application/octet-stream");
 };

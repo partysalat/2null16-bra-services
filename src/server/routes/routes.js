@@ -42,6 +42,13 @@ var routes = [{
     config: {
       handler: require('../handlers/versionHandler.js').captureImage
     }
+  },
+  {
+    method: 'GET',
+    path: '/internal/camera/preview',
+    config: {
+      handler: require('../handlers/versionHandler.js').preview
+    }
   }
 ];
 
