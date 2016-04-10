@@ -40,7 +40,7 @@ function onDisconnect(macAddress) {
 
 function onButtonClicked() {
   console.log("PHOTO SHOT!");
-  new GPhoto().captureImageAndDownload({filename:"~/braimages" + Date.now()+".jpg"})
+  new GPhoto().captureImageAndDownload({filename:"~/braimages/" + Date.now()+".jpg"})
     .then(console.log);
 }
 
