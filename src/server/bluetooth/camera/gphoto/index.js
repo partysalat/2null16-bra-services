@@ -1,16 +1,17 @@
 'use strict';
 var spawn = require("child_process").spawn,
+  cliBuilder = require("./cliBuilder"),
   joi = require("joi"),
   _ = require("lodash");
-var commands = [
-  "captureImage",
-  "captureImageAndDownload",
-  "capturePreview",
-  "abilities",
-  "autoDetect",
-  "listCameras",
-  "summary",
-  ];
+var commands = {
+  "captureImage":{},
+  "captureImageAndDownload":{},
+  "capturePreview":{},
+  "abilities":{},
+  "autoDetect":{},
+  "listCameras":{},
+  "summary":{tokenizer:_.identity}
+};
 var settingsSchema = joi.object().keys({
   folder: joi.string(),
   filename: joi.string().default(getFileName, "actual timestamp"),
@@ -25,7 +26,7 @@ function GPhoto(settings) {
   this.settings = settings || {};
 }
 
-_.forIn(commands, function (key) {
+_.forIn(commands, function (value,key) {
   GPhoto.prototype[key] = function (settings) {
     var res = joi.validate(settings, settingsSchema);
     if (res.error) {
@@ -39,14 +40,9 @@ _.forIn(commands, function (key) {
       defaultSettings.stdout = true;
     }
 
-    var commands = [];
-    _.forIn(defaultSettings, function (value, key) {
-      commands.push("--" + _.kebabCase(key));
-      if ((value && typeof value !== "boolean") || value === 0) {
-        commands.push(value);
-      }
-    });
-    return spawnGphoto(commands, this.settings.asStream);
+    var cliCommands = cliBuilder.build(defaultSettings);
+    
+    return spawnGphoto(cliCommands, this.settings.asStream);
   };
 });
 GPhoto.prototype.asStream = function () {
@@ -62,22 +58,24 @@ function spawnGphoto(commands, asStream) {
       console.log("Error occured", err);
     }).then(function () {
       return new Promise(function (resolve, reject) {
+        var dataArr = [];
         var childProcess = spawn("gphoto2", commands);
         childProcess.on('close', function (code) {
-          return code ? reject(code) : resolve();
+          return code ? reject(code) : resolve(dataArr);
         });
         childProcess.on('error', function (err) {
           console.log("error", err);
         });
-        childProcess.stdout.on('data', function (err) {
-          console.log("data", err.toString("utf8"));
+        childProcess.stdout.on('data', function (data) {
+          //console.log("data", data.toString("utf8"));
+          dataArr.push(data)
         });
       });
     });
     return jobQueue;
   } else {
     var childProcess = spawn("gphoto2", commands);
-    childProcess.stdout.on("data",console.log);
+    //childProcess.stdout.on("data",console.log);
     return childProcess.stdout;
   }
 }
