@@ -1,8 +1,12 @@
 'use strict';
 var _ = require("lodash"),
+  GPhoto = require("./gphoto"),
   noble = require("noble");
 var MAC_ADDRESSES = [
   "ffff00008185",
+  "ffff0000ed2d",
+  "ffff00009111",
+  "ffff00009c60",
   "2255db705ff8429881f79ac519d36ffd"
 ];
 var connected = {};
@@ -36,6 +40,8 @@ function onDisconnect(macAddress) {
 
 function onButtonClicked() {
   console.log("PHOTO SHOT!");
+  new GPhoto().captureImageAndDownload({filename:"~/braimages" + Date.now()+".jpg"})
+    .then(console.log);
 }
 
 module.exports.init = init;

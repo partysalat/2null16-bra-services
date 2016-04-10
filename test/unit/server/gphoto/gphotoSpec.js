@@ -1,11 +1,11 @@
 'use strict';
 var rewire = require("rewire");
 describe('gphoto', function () {
-  var GPhoto, spawnMock;
+  var GPhoto, gphotoCliService;
   beforeEach(function () {
     GPhoto = rewire('../../../../src/server/bluetooth/camera/gphoto/index');
-    spawnMock = jasmine.createSpy("spawn");
-    GPhoto.__set__("spawn", spawnMock);
+    gphotoCliService = jasmine.createSpyObj("gphotoCliService",["spawnGphoto",'spawnGphotoAsStream']);
+    GPhoto.__set__("gphotoCliService", gphotoCliService);
   });
 
   it('should be defined', function () {
@@ -36,7 +36,15 @@ describe('gphoto', function () {
     it("should call spawn with gphoto parameter", function (done) {
       mockData();
       gphoto.captureImage().then(()=> {
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
+        done();
+      });
+
+    });
+    xit("should call spawn with gphoto parameter", function (done) {
+      mockData();
+      gphoto.captureMovie({duration:"10s"}).then(()=> {
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-movie=10s","--filename",jasmine.any(String)]);
         done();
       });
 
@@ -45,7 +53,7 @@ describe('gphoto', function () {
       mockData();
       gphoto.captureImageAndDownload()
         .then(()=> {
-          expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image-and-download"]);
+          expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image-and-download","--filename",jasmine.any(String)]);
           done();
         });
 
@@ -53,10 +61,10 @@ describe('gphoto', function () {
     it("should return a promise when the image has been captured", function (done) {
       mockData();
       gphoto.captureImage().then(function () {
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
       });
       gphoto.captureImage().then(function () {
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
         done();
       });
     });
@@ -64,28 +72,27 @@ describe('gphoto', function () {
       mockData();
       gphoto.captureImage().then(function () {
         mockData(1);
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
       });
       gphoto.captureImage().catch(function () {
         mockData();
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
       });
       gphoto.captureImage().then(function () {
-        expect(spawnMock).toHaveBeenCalledWith("gphoto2", ["--capture-image"]);
-        expect(spawnMock.calls.count()).toBe(3);
+        expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image","--filename",jasmine.any(String)]);
+        expect(gphotoCliService.spawnGphoto.calls.count()).toBe(3);
         done();
       });
 
     });
   });
   function mockData(failCode) {
-    spawnMock.and.callFake(function () {
-      return {
-        stdout:spawnMock,
-        on: function (event, callback) {
-          callback(failCode);
-        }
-      };
-    });
+    if(failCode){
+      gphotoCliService.spawnGphoto.and.returnValue(Promise.reject(failCode));
+
+    }else{
+      gphotoCliService.spawnGphoto.and.returnValue(Promise.resolve());
+
+    }
   }
 });

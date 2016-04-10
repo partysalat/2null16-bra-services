@@ -1,21 +1,31 @@
 'use strict';
-var spawn = require("child_process").spawn,
-  cliBuilder = require("./cliBuilder"),
+var cliBuilder = require("./cliBuilder"),
+  gphotoCliService = require("./gphotoCliService"),
   joi = require("joi"),
   _ = require("lodash");
 var commands = {
-  "captureImage":{},
-  "captureImageAndDownload":{},
-  "capturePreview":{},
-  "abilities":{},
-  "autoDetect":{},
-  "listCameras":{},
-  "summary":{tokenizer:_.identity}
+  "captureImage": {transform: _.identity},
+  "captureImageAndDownload": {
+    transform: function (data) {
+      return data//.join("\n");
+    }
+  },
+  "captureMovie": {transform: _.identity},
+  "capturePreview": {transform: _.identity},
+  "abilities": {transform: _.identity},
+  "autoDetect": {transform: _.identity},
+  "listCameras": {transform: _.identity},
+  "summary": {
+    transform: function (data) {
+      return data.join("\n");
+    }
+  }
 };
 var settingsSchema = joi.object().keys({
   folder: joi.string(),
   filename: joi.string().default(getFileName, "actual timestamp"),
-  quiet:joi.boolean()
+  quiet: joi.boolean(),
+  duration: joi.string()
 });
 
 
@@ -26,59 +36,39 @@ function GPhoto(settings) {
   this.settings = settings || {};
 }
 
-_.forIn(commands, function (value,key) {
+_.forIn(commands, function (value, key) {
   GPhoto.prototype[key] = function (settings) {
+    settings = settings||{};
     var res = joi.validate(settings, settingsSchema);
     if (res.error) {
-      return Promise.reject(res.error);
+      throw res.error;
     }
     var defaultSettings = {};
     //set method name
     defaultSettings[key] = true;
     _.extend(defaultSettings, res.value, settings);
-    if (this.settings.asStream) {
-      defaultSettings.stdout = true;
-    }
-
-    var cliCommands = cliBuilder.build(defaultSettings);
-    
-    return spawnGphoto(cliCommands, this.settings.asStream);
+    this.settings.transform = value.transform;
+    this.settings.cliCommands = cliBuilder.build(defaultSettings);
+    return this;
   };
 });
+
 GPhoto.prototype.asStream = function () {
-  this.settings.asStream = true;
-  return this;
+  return gphotoCliService.spawnGphotoAsStream(this.settings.cliCommands.concat(["--stdout"]));
+};
+
+GPhoto.prototype.then = function (callback, errorCb) {
+  return gphotoCliService.spawnGphoto(this.settings.cliCommands)
+    .then(this.settings.transform)
+    .then(callback, errorCb);
+};
+GPhoto.prototype.catch = function (errorCb) {
+  return gphotoCliService.spawnGphoto(this.settings.cliCommands)
+    .then(this.settings.transform)
+    .catch(errorCb);
 };
 
 
-var jobQueue = Promise.resolve();
-function spawnGphoto(commands, asStream) {
-  if (!asStream) {
-    jobQueue = jobQueue.catch(function (err) {
-      console.log("Error occured", err);
-    }).then(function () {
-      return new Promise(function (resolve, reject) {
-        var dataArr = [];
-        var childProcess = spawn("gphoto2", commands);
-        childProcess.on('close', function (code) {
-          return code ? reject(code) : resolve(dataArr);
-        });
-        childProcess.on('error', function (err) {
-          console.log("error", err);
-        });
-        childProcess.stdout.on('data', function (data) {
-          //console.log("data", data.toString("utf8"));
-          dataArr.push(data)
-        });
-      });
-    });
-    return jobQueue;
-  } else {
-    var childProcess = spawn("gphoto2", commands);
-    //childProcess.stdout.on("data",console.log);
-    return childProcess.stdout;
-  }
-}
 function getFileName() {
   return Date.now() + ".jpg";
 }

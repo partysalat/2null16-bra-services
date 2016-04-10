@@ -4,6 +4,9 @@ var _ = require("lodash"),
   proximityService = require("./proximityService");
 var MAC_ADDRESSES = [
   "ffff00008185",
+  "ffff0000ed2d",
+  "ffff00009111",
+  "ffff00009c60",
   "2255db705ff8429881f79ac519d36ffd"
 ];
 

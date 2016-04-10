@@ -19,11 +19,15 @@ module.exports.stop = function (request, reply) {
 var GPhoto = require("./../bluetooth/camera/gphoto");
 module.exports.captureImage = function(request,reply){
   new GPhoto().captureImageAndDownload({
-    //filename:Date.now()+".jpg"
+    filename:__dirname + "/"+Date.now()+".jpg"
   }).then(reply).catch(function(err){
     console.log(err);
     reply(err);
   });
+  /*reply(new GPhoto().captureMovie({
+    "duration":"10s"
+    //filename:__dirname + "/"+Date.now()+".jpg"
+  }).asStream());*/
 };
 
 
@@ -34,7 +38,7 @@ var stream;
 
 module.exports.preview = function(request,reply){
   if(!stream){
-    stream = new GPhoto().asStream().capturePreview();
+    stream = new GPhoto().capturePreview().asStream();
   }
   //reply(new GPhoto().asStream().capturePreview()).header("content-type","application/octet-stream");
   reply(stream).header("content-type","application/octet-stream");
