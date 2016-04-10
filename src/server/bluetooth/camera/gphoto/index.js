@@ -7,7 +7,7 @@ var commands = {
   "captureImage": {transform: _.identity},
   "captureImageAndDownload": {
     transform: function (data) {
-      return data//.join("\n");
+      return data;//.join("\n");
     }
   },
   "captureMovie": {transform: _.identity},

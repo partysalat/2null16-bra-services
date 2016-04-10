@@ -41,14 +41,14 @@ describe('gphoto', function () {
       });
 
     });
-    xit("should call spawn with gphoto parameter", function (done) {
+    /*it("should call spawn with gphoto parameter", function (done) {
       mockData();
       gphoto.captureMovie({duration:"10s"}).then(()=> {
         expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-movie=10s","--filename",jasmine.any(String)]);
         done();
       });
 
-    });
+    });*/
     it("should call spawn with gphoto parameter for caputePictureAndDownload", function (done) {
       mockData();
       gphoto.captureImageAndDownload()
