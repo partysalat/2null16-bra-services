@@ -40,10 +40,10 @@ function onDisconnect(macAddress,peripheral) {
   onDiscover(peripheral);//try to reconnect
 
 }
-
+var path = require("path")
 function onButtonClicked() {
   console.log("PHOTO SHOT!");
-  new GPhoto().captureImageAndDownload({filename:"~/braimages/" + Date.now()+".jpg"})
+  new GPhoto().captureImageAndDownload({filename:__dirname + "/../../../../../../braimages/" + Date.now()+".jpg"})
     .then(console.log);
 }
 
