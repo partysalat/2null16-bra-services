@@ -19,13 +19,14 @@ function onDiscover(peripheral) {
   var macAddress = peripheral.uuid;
   if (_.includes(MAC_ADDRESSES, macAddress) && !connected[macAddress]) {
     connected[macAddress] = true;
+    console.log("DISCOVER",macAddress);
     peripheral.connect(_.partial(onConnect, peripheral));
-    peripheral.once('disconnect', _.partial(onDisconnect,macAddress));
+    peripheral.once('disconnect', _.partial(onDisconnect,macAddress,peripheral));
   }
 }
 
 function onConnect(peripheral) {
-  console.log("connected with periphel " + peripheral.uuid);
+  console.log("CONNECTED", peripheral.uuid);
   peripheral.discoverSomeServicesAndCharacteristics(["ffe0"], ["ffe1"], function (error, services, chars) {
     var char = chars[0];
     char.notify(true);
@@ -33,9 +34,11 @@ function onConnect(peripheral) {
   });
 }
 
-function onDisconnect(macAddress) {
+function onDisconnect(macAddress,peripheral) {
   console.log("DISCONNECTED",macAddress);
   connected[macAddress] = false;
+  onDiscover(peripheral);//try to reconnect
+
 }
 
 function onButtonClicked() {
