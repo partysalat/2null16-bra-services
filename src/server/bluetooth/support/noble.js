@@ -14,8 +14,8 @@ function stop(){
   noble.stopScanning();
 }
 function start(){
-  noble.startScanning([], true);
-  // noble.startScanning();
+  //noble.startScanning([], true);
+   noble.startScanning();
 }
 module.exports.init = init;
 module.exports.stop = stop;

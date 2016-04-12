@@ -7,7 +7,20 @@ var commands = {
   "captureImage": {transform: _.identity},
   "captureImageAndDownload": {
     transform: function (data) {
-      return data.join("\n");
+      if (data) {
+        return {
+          filename: _(data)
+            .map(function (val) {
+              return val.toString("utf8");
+            })
+            .map(function (line) {
+              return (line.match(/\/(1.*\.jpg)/) || [])[1];
+            })
+            .filter(_.identity)
+            .first()
+        }
+      }
+      return data;
     }
   },
   "captureMovie": {transform: _.identity},
@@ -38,7 +51,7 @@ function GPhoto(settings) {
 
 _.forIn(commands, function (value, key) {
   GPhoto.prototype[key] = function (settings) {
-    settings = settings||{};
+    settings = settings || {};
     var res = joi.validate(settings, settingsSchema);
     if (res.error) {
       throw res.error;

@@ -2,7 +2,14 @@
 var rewire = require("rewire");
 describe('gphoto', function () {
   var GPhoto, gphotoCliService;
+  var CIAD_DATA;
   beforeEach(function () {
+    CIAD_DATA = [
+      new Buffer('New file is in location /capt0000.jpg on the camera'),
+      new Buffer('Saving file as ~/braimages/1460393800708.jpg'),
+      new Buffer(''),
+      new Buffer('Deleting file /capt0000.jpg on the camera')
+    ];
     GPhoto = rewire('../../../../src/server/bluetooth/camera/gphoto/index');
     gphotoCliService = jasmine.createSpyObj("gphotoCliService",["spawnGphoto",'spawnGphotoAsStream']);
     GPhoto.__set__("gphotoCliService", gphotoCliService);
@@ -49,11 +56,20 @@ describe('gphoto', function () {
       });
 
     });*/
-    it("should call spawn with gphoto parameter for caputePictureAndDownload", function (done) {
+    it("should call spawn with gphoto parameter for captureImageAndDownload", function (done) {
       mockData();
       gphoto.captureImageAndDownload()
         .then(()=> {
           expect(gphotoCliService.spawnGphoto).toHaveBeenCalledWith(["--capture-image-and-download","--filename",jasmine.any(String)]);
+          done();
+        });
+
+    });
+    it("should return the filename", function (done) {
+      mockData(0,CIAD_DATA);
+      gphoto.captureImageAndDownload()
+        .then((imagePath)=> {
+          expect(imagePath).toEqual({filename:"1460393800708.jpg"});
           done();
         });
 
@@ -86,12 +102,12 @@ describe('gphoto', function () {
 
     });
   });
-  function mockData(failCode) {
+  function mockData(failCode,data) {
     if(failCode){
       gphotoCliService.spawnGphoto.and.returnValue(Promise.reject(failCode));
 
     }else{
-      gphotoCliService.spawnGphoto.and.returnValue(Promise.resolve());
+      gphotoCliService.spawnGphoto.and.returnValue(Promise.resolve(data));
 
     }
   }
