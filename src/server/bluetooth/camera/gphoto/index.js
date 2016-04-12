@@ -18,7 +18,7 @@ var commands = {
             })
             .filter(_.identity)
             .first()
-        }
+        };
       }
       return data;
     }
