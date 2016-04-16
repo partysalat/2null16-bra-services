@@ -2,7 +2,6 @@
 var packageInfo = require('pkginfo');
 var noble = require("./../bluetooth/support/noble");
 var path = require("path");
-var braClient = require("./../clients/braClient");
 module.exports = function version(request, reply) {
   var applicationVersion = packageInfo.read(module).package.version;
   reply({Version: applicationVersion});

@@ -1,11 +1,12 @@
 'use strict';
 var rp = require("request-promise"),
   sprintf = require("sprintf-js").sprintf;
-module.exports.updateUserState = function(keeperName,status){
-  //console.log("updateUserState",keeperName,status);
+module.exports.updateUserState = function(keeperName,payload){
   return rp({
     method:"PUT",
-    url:sprintf("http://localhost:1337/api/keeper/%s/%s",keeperName,status)
+    body:payload,
+    json:true,
+    url:sprintf("http://localhost:1337/api/keeper/%s",keeperName)
   });
 };
 
