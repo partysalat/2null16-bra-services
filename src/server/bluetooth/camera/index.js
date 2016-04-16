@@ -33,7 +33,7 @@ function onConnect(peripheral) {
   });
 }
 
-function onDisconnect(macAddress, peripheral) {
+function onDisconnect(macAddress) {
   console.log("DISCONNECTED", macAddress);
   connected[macAddress] = false;
   //onDiscover(peripheral);//try to reconnect
