@@ -9,9 +9,9 @@ module.exports.updateUserState = function(keeperName,status){
   });
 };
 
-module.exports.photoTaken = function(imagePath,keeper){
+module.exports.photoTaken = function(imagePath){
   return rp({
     method:"POST",
-    url:sprintf("http://localhost:1337/api/photo/%s/%s",imagePath,keeper)
+    url:sprintf("http://localhost:1337/api/photo/%s",imagePath)
   });
 };

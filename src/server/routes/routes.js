@@ -37,8 +37,8 @@ var routes = [{
       handler: require('../handlers/versionHandler.js').stop
     }
   },{
-    method: 'GET',
-    path: '/internal/camera/shot',
+    method: 'POST',
+    path: '/api/camera/shot',
     config: {
       handler: require('../handlers/versionHandler.js').captureImage
     }
