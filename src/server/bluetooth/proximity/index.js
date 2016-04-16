@@ -11,7 +11,7 @@ var throttleFunctions = {};
 var keeperInfo = {};
 var CLEANUP_INTERVAL;
 
-var THROTTLE_WAIT_TIME = 3000;
+var THROTTLE_WAIT_TIME = 5000;
 var INACTIVE_TIME = 6000;
 var INTERVAL_DELAY = 5000;
 
@@ -44,10 +44,13 @@ CLEANUP_INTERVAL = setInterval(function(){
   _.forIn(keeperInfo,function(keeper,macAddress){
       if(Date.now() - keeper.timestamp>INACTIVE_TIME){
         keeper.distance = Infinity;
+        console.log("CLEANUP INTERVAL",macAddress);
         braClient.updateUserState(macAddress, {
           keeper: macAddress,
           distance: keeperInfo[macAddress].distance
         });
+        delete keeperInfo[macAddress];
+        delete throttleFunctions[macAddress];
       }
   });
 },INTERVAL_DELAY);
