@@ -18,17 +18,33 @@ module.exports.stop = function (request, reply) {
 
 
 var GPhoto = require("./../bluetooth/camera/gphoto");
+var gm = require("gm");
+var IMAGE_FILE_PREFIX = path.resolve(process.env.HOME + "/braimages") + "/";
+function resizeImage(img) {
+  return new Promise(function(resolve,reject){
+    var newFileName = img.filename.substring(0, img.filename.length - 4)+"_min" + ".jpg";
+    gm(IMAGE_FILE_PREFIX + img.filename)
+      .resize(640, 480)
+      .noProfile()
+      .write(IMAGE_FILE_PREFIX + newFileName, function (err) {
+        if(err)return reject(err);
+        resolve({
+          filename:newFileName
+        });
+      });
+  })
+  
+}
 module.exports.captureImage = function (request, reply) {
-  new GPhoto().captureImageAndDownload({filename: path.resolve(process.env.HOME + "/braimages") + "/" + Date.now() + ".jpg"})
+  
+  new GPhoto().captureImageAndDownload({filename: IMAGE_FILE_PREFIX + Date.now() + ".jpg"})
+    .then(resizeImage)
     .then(reply)
     .catch(function (err) {
       console.log(err);
       reply(err);
     });
-  /*reply(new GPhoto().captureMovie({
-   "duration":"10s"
-   //filename:__dirname + "/"+Date.now()+".jpg"
-   }).asStream());*/
+
 };
 
 

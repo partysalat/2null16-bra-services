@@ -27,6 +27,11 @@ ssh-copy-id pi@raspberrypi
   sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
 ```
 
+### Installing graphicsmagick
+```
+apt-get install graphicsmagick
+```
+
 ### pm2 (pi)
 ```
  sudo mkdir -p /opt/.pm2

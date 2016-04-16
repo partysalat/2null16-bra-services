@@ -18,6 +18,7 @@
   "author": "lenser.ben@gmail.com",
   "dependencies": {
     "bluebird": "^3.3.4",
+    "gm": "^1.22.0",
     "hapi": "^13.2.2",
     "hapi-auto-routes": "^1.0.3",
     "hapi-swagger": "^4.3.1",
