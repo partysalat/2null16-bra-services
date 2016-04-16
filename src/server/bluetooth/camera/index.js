@@ -14,7 +14,7 @@ function init() {
 
 function onDiscover(peripheral) {
   var macAddress = peripheral.uuid;
-  if (_.get(peripheral,"advertisement.localName")==="ITAG") {
+  if (_.get(peripheral, "advertisement.localName") === "ITAG" && !connected[macAddress]) {
     connected[macAddress] = true;
     console.log("DISCOVER", macAddress);
     peripheral.connect(_.partial(onConnect, peripheral));
@@ -25,26 +25,28 @@ function onDiscover(peripheral) {
 function onConnect(peripheral) {
   console.log("CONNECTED", peripheral.uuid);
   peripheral.discoverSomeServicesAndCharacteristics(["ffe0"], ["ffe1"], function (error, services, chars) {
+    console.log("SERVICE DISCOVERED", services.uuid);
     var char = chars[0];
     char.notify(true);
 
-    char.on("data", onButtonClicked);
+    char.on("data", onButtonClicked.bind(this,peripheral.uuid));
   });
 }
 
 function onDisconnect(macAddress, peripheral) {
   console.log("DISCONNECTED", macAddress);
   connected[macAddress] = false;
-  onDiscover(peripheral);//try to reconnect
+  //onDiscover(peripheral);//try to reconnect
 
 
 }
 
-function onButtonClicked() {
-  console.log("PHOTO SHOT!");
-  new GPhoto().captureImageAndDownload({filename: path.resolve(__dirname + "/../../../../../../braimages/") + Date.now() + ".jpg"})
-    .then(function(img){
-      braClient.photoTaken(img.filename);
+function onButtonClicked(uuid) {
+  console.log("PHOTO SHOT! for",uuid);
+  new GPhoto().captureImageAndDownload({filename: path.resolve(__dirname + "/../../../../../../braimages") + "/" + Date.now() + ".jpg"})
+    .then(function (img) {
+      //TODO: Implement this!
+      return braClient.photoTaken(img.filename,"flo");
     });
 }
 
