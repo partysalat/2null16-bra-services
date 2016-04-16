@@ -27,17 +27,20 @@ function resizeImage(img) {
       .resize(640, 480)
       .noProfile()
       .write(IMAGE_FILE_PREFIX + newFileName, function (err) {
-        if(err)return reject(err);
+        if(err){
+          return reject(err);
+        }
         resolve({
           filename:newFileName
         });
       });
-  })
+  });
   
 }
 module.exports.captureImage = function (request, reply) {
   
   new GPhoto().captureImageAndDownload({filename: IMAGE_FILE_PREFIX + Date.now() + ".jpg"})
+    
     .then(resizeImage)
     .then(reply)
     .catch(function (err) {
