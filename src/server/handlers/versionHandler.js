@@ -45,7 +45,7 @@ module.exports.captureImage = function (request, reply) {
     .then(reply)
     .catch(function (err) {
       console.log(err);
-      reply(err);
+      reply("Could not capture image").code(500);
     });
 
 };
