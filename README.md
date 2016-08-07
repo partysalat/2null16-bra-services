@@ -106,3 +106,12 @@ Restart network for taking changes
 sudo /etc/init.d/networking restart
 iwconfig
 ```
+
+Local Camera testing (MAC only)
+
+```
+ps ax|grep PTP
+kill <PID>
+```
+
+@see http://gphoto.org/doc/manual/FAQ.html#FAQ-could-not-claim-USB
