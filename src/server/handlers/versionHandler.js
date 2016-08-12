@@ -41,7 +41,7 @@ var cameraActiveFlag = false;
 module.exports.captureImage = function (request, reply) {
   if(cameraActiveFlag){
     console.log("photo already in progress");
-    reply("ok");
+    reply("in progress").code(400);
     return;
   }
   cameraActiveFlag = true;
