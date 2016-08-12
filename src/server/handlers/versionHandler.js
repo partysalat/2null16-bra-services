@@ -37,14 +37,24 @@ function resizeImage(img) {
   });
   
 }
+var cameraActiveFlag = false;
 module.exports.captureImage = function (request, reply) {
-  
+  if(cameraActiveFlag){
+    console.log("photo already in progress");
+    reply("ok");
+    return;
+  }
+  cameraActiveFlag = true;
   new GPhoto().captureImageAndDownload({filename: IMAGE_FILE_PREFIX + Date.now() + ".jpg"})
     
     .then(resizeImage)
-    .then(reply)
+    .then(function(data){
+      cameraActiveFlag = false;
+      reply(data);
+    })
     .catch(function (err) {
       console.log(err);
+      cameraActiveFlag = false;
       reply("Could not capture image").code(500);
     });
 
